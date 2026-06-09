@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aliferous Hub | The Sanctuary Experience</title>
+    <style>
+        :root {
+            /* Luxury Ministry Color Palette */
+            --bg-obsidian: #030305;
+            --surface-velvet: #09090e;
+            --accent-gold: #dfb15b; 
+            --text-pure: #ffffff;
+            --text-silk: #c4c4c7;
+            --text-muted: #6e6e77;
+
+            /* Interactive Avatar Rig Settings */
+            --skin-tone: #ffdbac;
+            --skin-shadow: #f1c28d;
+            --hair-color: #1a202c;
+            --eye-color: #0f172a;
+            --mouth-dark: #3b0712;
+            
+            --brow-move: 0px;
+            --brow-rotate: 0deg;
+            --eye-height: 16px;
+            --mouth-height: 10px;
+            --mouth-width: 28px;
+            --mouth-radius: 0 0 15px 15px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-obsidian);
+            color: var(--text-pure);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 24px;
+            overflow-x: hidden;
+        }
+
+        .hero-sanctuary {
+            background: linear-gradient(180deg, #0c0c12 0%, var(--surface-velvet) 100%);
+            border: 1px solid rgba(223, 177, 91, 0.08); 
+            border-radius: 32px;
+            padding: 60px 40px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 40px 90px rgba(0, 0, 0, 0.9), 0 0 60px rgba(223, 177, 91, 0.02);
+            position: relative;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--text-pure);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        h1 span {
+            font-weight: 600;
+            color: var(--text-pure);
+        }
+
+        .hero-description {
+            color: var(--text-silk);
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .avatar-container-outer {
+            margin: 0 auto 40px auto;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, #13131f 0%, #050508 100%);
+            border-radius: 50%;
+            border: 1px solid rgba(223, 177, 91, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .avatar-container-outer.active {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 40px rgba(223, 177, 91, 0.12);
+        }
+
+        .head {
+            width: 74px;
+            height: 86px;
+            background-color: var(--skin-tone);
+            border-radius: 37px 37px 32px 32px;
+            position: relative;
+            box-shadow: inset 0 -6px 0 var(--skin-shadow);
+            z-index: 2;
+        }
+
+        .hair-back {
+            width: 84px;
+            height: 84px;
+            background-color: var(--hair-color);
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            z-index: 1;
+        }
+
+        .hair-top {
+            width: 80px;
+            height: 38px;
+            background-color: var(--hair-color);
+            border-radius: 40px 40px 0 0;
+            position: absolute;
+            top: -6px;
+            left: -3px;
+            z-index: 3;
+        }
+
+        .brows-container {
+            position: absolute;
+            top: 26px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 12px;
+            z-index: 4;
+        }
+
+        .brow {
+            width: 18px;
+            height: 4px;
+            background-color: var(--hair-color);
+            border-radius: 2px;
+            transition: transform 0.4s ease;
+        }
+
+        .brow.left { transform: translateY(var(--brow-move)) rotate(var(--brow-rotate)); }
+        .brow.right { transform: translateY(var(--brow-move)) rotate(calc(var(--brow-rotate) * -1)); }
+
+        .eyes-container {
+            position: absolute;
+            top: 34px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 14px;
+            z-index: 4;
+        }
+
+        .eye {
+            width: 13px;
+            height: var(--eye-height);
+            background-color: var(--eye-color);
+            border-radius: 50%;
+            transition: height 0.4s ease;
+        }
+
+        .nose {
+            width: 8px;
+            height: 12px;
+            background-color: var(--skin-shadow);
+            border-radius: 4px;
+            position: absolute;
+            top: 46px;
+            left: calc(50% - 4px);
+            z-index: 4;
+        }
+
+        .mouth-container {
+            position: absolute;
+            bottom: 14px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 4;
+        }
+
+        .mouth {
+            width: var(--mouth-width);
+            height: var(--mouth-height);
+            background-color: var(--mouth-dark);
+            border-radius: var(--mouth-radius);
+            transition: all 0.3s ease;
+        }
+
+        .btn-sanctuary-trigger {
+            background-color: transparent;
+            color: var(--text-silk);
+            border: 1px solid rgba(224, 224, 230, 0.1);
+            padding: 18px 36px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+        }
+
+        .btn-sanctuary-trigger:hover {
+            border-color: var(--accent-gold);
+            color: var(--text-pure);
+            box-shadow: 0 4px 30px rgba(223, 177, 91, 0.05);
+        }
+
+        .btn-sanctuary-trigger.active {
+            background-color: var(--text-pure);
+            border-color: var(--text-pure);
+            color: var(--bg-obsidian);
+            font-weight: 600;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-sanctuary">
+        <span class="hero-tag">Welcome Home</span>
+        <h1>Aliferous <span>Revival Hub</span></h1>
+        <p class="hero-description">Enter into a curated moment of divine reflection. Experience an elegant sanctuary environment shaped by soft prayer layers and a deep, thoughtful narrative structure.</p>
+
+        <div class="avatar-container-outer" id="avatarWidget" onclick="toggleAtmosphere()">
+            <div class="hair-back"></div>
+            <div class="head">
+                <div class="hair-top"></div>
+                <div class="brows-container">
+                    <div class="brow left" id="browL"></div>
+                    <div class="brow right" id="browR"></div>
+                </div>
+                <div class="eyes-container">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                </div>
+                <div class="nose"></div>
+                <div class="mouth-container">
+                    <div class="mouth" id="mouthRig"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-sanctuary-trigger" id="controlBtn" onclick="toggleAtmosphere()"></button></button><top>listen!!!!!!!!!!!!</top> </div>
+    </div>
+
+    <script>
+        const synth = window.speechSynthesis;
+        const root = document.documentElement;
+        const controlBtn = document.getElementById('controlBtn');
+        const avatarWidget = document.getElementById('avatarWidget');
+        
+        let isRunning = false;
+        let speechQueue = [];
+        let currentUtterance = null;
+        
+        let audioCtx = null;
+        let masterGain = null;
+        let activeOscillators = [];
+        let chordLoopInterval = null;
+
+        const premiumNarrative = [
+            { text: "Here is the complete, detailed breakdown of Aliferous Revival Hub, including its identity, foundational meaning, core spiritual architecture, and societal mandates.", delay: 600, pitch: 0.81 },
+            { text: "Section One. Identity and Foundational Purpose.", delay: 500, pitch: 0.80 },
+            { text: "Aliferous Revival Hub is clearly defined as a revival and transformational movement.", delay: 600, pitch: 0.82 },
+            { text: "The Core Commitment: The movement is dedicated to raising a generation that carries God’s presence, walks in divine purpose, and actively influences systems to advance the Kingdom of God.", delay: 800, pitch: 0.78 },
+            { text: "The Founder: Apostle Karami Evans Joshua is officially named as the founder of Aliferous Revival Hub.", delay: 700, pitch: 0.79 },
+            { text: "The Spiritual Pillars: The community identifies as a people built and formed through five distinct spiritual keys: Prayer, Revival, Discipleship, Leadership, and the fire of the Holy Spirit.", delay: 900, pitch: 0.80 },
+            { text: "The Core Assignment: To awaken hearts, transform lives, and firmly establish Kingdom influence across every single sphere of society.", delay: 800, pitch: 0.81 },
+            { text: "The Meaning of Aliferous. The name of the movement carries profound symbolic weight.", delay: 600, pitch: 0.79 },
+            { text: "Literal Definition: The word Aliferous literally translates to: to have wings.", delay: 600, pitch: 0.80 },
+            { text: "Symbolic Pillars: Wings represent seven specific dimensions: elevation, movement, dominion, speed, strength, vision, and divine empowerment.", delay: 850, pitch: 0.82 },
+            { text: "The Ultimate Objective: Just as wings allow an entity to mount up and rise far above structural limitations, the hub exists to empower individuals to rise spiritually, mentally, and purposefully to leave an impact on nations and territories.", delay: 950, pitch: 0.78 },
+            { text: "Section Two. Vision and Mission.", delay: 500, pitch: 0.81 },
+            { text: "The operational focus of the ministry is anchored by two driving statements. Our Vision: Impacting systems and territories. Our Mission: Built in Fire. Sent to Transform.", delay: 900, pitch: 0.83 },
+            { text: "Section Three. The Aliferous System, containing the Five Societal Pillars.", delay: 600, pitch: 0.80 },
+            { text: "The ministry operates under a structured blueprint called the Aliferous System, which targets five critical sectors of human civilization to enforce transformation.", delay: 800, pitch: 0.79 },
+            { text: "Pillar one. Society, or the Jebek Power Elite. The focus is street evangelism and public gospel deployment.", delay: 700, pitch: 0.81 },
+            { text: "Impact: Preaching and sharing the gospel openly in public spaces impacts the community in complex, multifaceted ways. It serves as a vital source of spiritual encouragement, though it can sometimes intersect with public controversy.", delay: 950, pitch: 0.80 },
+            { text: "Pillar two. Government, known as the Statesmen Voice. The focus is influencing governance, political structures, and leadership.", delay: 750, pitch: 0.78 },
+            { text: "Impact: The church impacts government by serving strictly as a moral conscience, actively advocating for social justice, and shaping public opinion on critical policy issues. It shapes politics by mobilizing voters and engaging in direct lobbying on moral issues.", delay: 950, pitch: 0.82 },
+            { text: "Pillar three. Schools, named Evolve. The focus is shaping academic environments and youth identity.", delay: 700, pitch: 0.81 },
+            { text: "Impact: Providing consistent moral guidance, mentorship, and a deep sense of spiritual identity that serves as a protective buffer against risky behaviors. The system notes that while it succeeds at establishing good behavior, many young men report a compartmentalized faith that doesn't always fully bridge into their emotional well-being or academic success, highlighting the need for deeper spiritual integration.", delay: 1100, pitch: 0.79 },
+            { text: "Pillar four. Families, under the banner United By Blood. The focus is the core structural unit of the home.", delay: 700, pitch: 0.80 },
+            { text: "Impact: Cultivating a tight-knit community of faith, promoting shared family worship, and delivering biblical teaching that shapes foundational character and reinforces solid values. It serves as an active support ecosystem that fosters spiritual growth specifically through intentional, intergenerational mentorship.", delay: 1000, pitch: 0.78 },
+            { text: "Pillar five. Business, titled Wealth Titans. The focus is marketplace dominance and economic integrity.", delay: 700, pitch: 0.81 },
+            { text: "Impact: Combating corruption primarily by redefining the moral framework of business owners, entrepreneurs, and employees. It promotes ethical stewardship over mere profit maximization and stands as a vocal, prophetic conscience against dishonest marketplace practices. By explicitly integrating biblical principles, such as integrity, fairness, and profound care for the vulnerable into daily commerce, it aims to aggressively reduce systemic corruption, viewing it as both a sin and a social disease.", delay: 1200, pitch: 0.82 }
+        ];
+
+        function setAvatarExpression(state) {
+            if (state === 'praying') {
+                root.style.setProperty('--brow-move', '-1px');
+                root.style.setProperty('--brow-rotate', '2deg');
+                root.style.setProperty('--eye-height', '2px'); 
+                root.style.setProperty('--mouth-width', '24px');
+                root.style.setProperty('--mouth-height', '9px');
+                root.style.setProperty('--mouth-radius', '6px 6px 12px 12px');
+            } else {
+                root.style.setProperty('--brow-move', '0px');
+                root.style.setProperty('--brow-rotate', '0deg');
+                root.style.setProperty('--eye-height', '16px');
+                root.style.setProperty('--mouth-width', '28px');
+                root.style.setProperty('--mouth-height', '10px');
+                root.style.setProperty('--mouth-radius', '0 0 15px 15px');
+            }
+        }
+
+        function animateMouth() {
+            if (!isRunning) return;
+            const toggle = Math.random() > 0.6;
+            root.style.setProperty('--mouth-height', toggle ? '11px' : '5px');
+            root.style.setProperty('--mouth-width', toggle ? '25px' : '22px');
+            setTimeout(animateMouth, 180); 
+        }
+
+        function initAtmosphericAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            masterGain = audioCtx.createGain();
+            
+            const lowpass = audioCtx.createBiquadFilter();
+            lowpass.type = 'lowpass';
+            lowpass.frequency.setValueAtTime(160, audioCtx.currentTime); 
+            
+            masterGain.connect(lowpass);
+            lowpass.connect(audioCtx.destination);
+        }
+
+        function playAtmosphereChord(frequencies, bassNote) {
+            const now = audioCtx.currentTime;
+            fadeOutActiveOscillators();
+
+            masterGain.gain.setValueAtTime(0, now);
+            masterGain.gain.linearRampToValueAtTime(0.04, now + 9.5); 
+
+            frequencies.forEach(freq => {
+                const osc = audioCtx.createOscillator();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now);
+                osc.detune.setValueAtTime((Math.random() - 0.5) * 10, now);
+                
+                osc.connect(masterGain);
+                osc.start(now);
+                activeOscillators.push(osc);
+            });
+
+            const subDrone = audioCtx.createOscillator();
+            subDrone.type = 'sine';
+            subDrone.frequency.setValueAtTime(bassNote, now);
+            
+            subDrone.connect(masterGain);
+            subDrone.start(now);
+            activeOscillators.push(subDrone);
+        }
+
+        function fadeOutActiveOscillators() {
+            const now = audioCtx.currentTime;
+            const oldOscillators = [...activeOscillators];
+            activeOscillators = [];
+
+            oldOscillators.forEach(osc => {
+                try {
+                    osc.stop(now + 4.5); 
+                } catch(e) {}
+            });
+        }
+
+        function startAtmosphereLoop() {
+            if (!audioCtx) initAtmosphericAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const progression = [
+                { chord: [185.00, 220.00, 277.18], bass: 92.50 },  
+                { chord: [146.83, 220.00, 293.66], bass: 73.42 },  
+                { chord: [220.00, 277.18, 329.63], bass: 110.00 }, 
+                { chord: [164.81, 246.94, 329.63], bass: 82.41 }   
+            ];
+
+            let step = 0;
+            playAtmosphereChord(progression[step].chord, progression[step].bass);
+
+            chordLoopInterval = setInterval(() => {
+                step = (step + 1) % progression.length;
+                playAtmosphereChord(progression[step].chord, progression[step].bass);
+            }, 10000); 
+        }
+
+        function stopAtmosphereAudio() {
+            if (chordLoopInterval) clearInterval(chordLoopInterval);
+            if (masterGain) {
+                try {
+                    const now = audioCtx.currentTime;
+                    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+                    masterGain.gain.linearRampToValueAtTime(0, now + 4.0); 
+                    setTimeout(() => {
+                        activeOscillators.forEach(o => { try{ o.stop(); }catch(e){} });
+                        activeOscillators = [];
+                    }, 4200);
+                } catch(e) {}
+            }
+        }
+
+        function processSpeechQueue() {
+            if (!isRunning || speechQueue.length === 0) {
+                if (speechQueue.length === 0 && isRunning) handleAtmosphereEnded();
+                return;
+            }
+
+            const currentSegment = speechQueue.shift();
+            currentUtterance = new SpeechSynthesisUtterance(currentSegment.text);
+            
+            // Multi-device voice filtering strategy
+            const voices = synth.getVoices();
+            let selectedVoice = voices.find(v => 
+                v.name.includes('David') || 
+                v.name.includes('Google UK English Male') || 
+                v.name.includes('Microsoft David') ||
+                v.name.includes('Rishi') || 
+                v.name.includes('Daniel')
+            );
+
+            if (!selectedVoice) {
+                selectedVoice = voices.find(v => v.name.toLowerCase().includes('male'));
+            }
+
+            if (!selectedVoice) {
+                selectedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('en-GB') || v.name.includes('en-US')));
+            }
+
+            if (selectedVoice) currentUtterance.voice = selectedVoice;
+
+            currentUtterance.rate = 0.84;  
+            currentUtterance.pitch = currentSegment.pitch; 
+
+            currentUtterance.onend = () => {
+                setTimeout(() => {
+                    processSpeechQueue();
+                }, currentSegment.delay); 
+            };
+
+            currentUtterance.onerror = () => handleAtmosphereEnded();
+            synth.speak(currentUtterance);
+        }
+
+        function toggleAtmosphere() {
+            if (isRunning) {
+                synth.cancel();
+                handleAtmosphereEnded();
+            } else {
+                isRunning = true;
+                controlBtn.textContent = "Conclude Reflection";
+                controlBtn.classList.add('active');
+                avatarWidget.classList.add('active');
+                setAvatarExpression('praying');
+                animateMouth();
+                startAtmosphereLoop();
+
+                speechQueue = [...premiumNarrative];
+
+                setTimeout(() => {
+                    if (isRunning) processSpeechQueue();
+                }, 4500); 
+            }
+        }
+
+        function handleAtmosphereEnded() {
+            isRunning = false;
+            speechQueue = [];
+            controlBtn.textContent = "Initiate Experience";
+            controlBtn.classList.remove('active');
+            avatarWidget.classList.remove('active');
+            setAvatarExpression('default');
+            stopAtmosphereAudio();
+        }
+
+        // Handle async voice loading profiles native to desktop systems & hosted deployment
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => {
+                if (isRunning && speechQueue.length > 0 && !synth.speaking) {
+                    processSpeechQueue();
+                }
+            };
+        }
+    </script>
+</body>
+</html>
